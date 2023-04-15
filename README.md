@@ -1,1 +1,1 @@
-# Server
+# GymBot AI Server
