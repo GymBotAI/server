@@ -1,7 +1,17 @@
 const HyperExpress = require('hyper-express');
 const LiveDirectory = require('live-directory');
+const { Configuration: OpenAIConfig, OpenAIApi } = require("openai");
+const basePrompt = require('./prompt.json');
 
 const app = new HyperExpress.Server();
+
+const openaiChatModel = 'gpt-3.5-turbo';
+const openai = new OpenAIApi(new OpenAIConfig({
+  apiKey: process.env.OPENAI_KEY
+}));
+
+// message roles allowed from the client
+const allowedClientRoles = ['user', 'assistant'];
 
 // static files middleware
 const static = new LiveDirectory(__dirname + '/static', {
@@ -26,6 +36,72 @@ app.get('/*', (req, res) => {
   } else {
     file.stream().pipe(res);
   }
+});
+
+// ChatGPT endpoint
+app.post('/chat', async (req, res) => {
+  const { secret, messages } = await req.json();
+
+  if (!(messages instanceof Array)) {
+    return res.atomic(() => {
+      res
+        .status(400)
+        .send('Messages must be an array (of objects).');
+    });
+  }
+
+  if (secret != process.env.REQ_SECRET) {
+    return res.atomic(() => {
+      res
+        .status(401)
+        .send('Invalid or no secret provided.\n');
+    });
+  }
+
+  let messagesCheckError = null;
+  for (const message of messages) {
+    if (typeof message.role != 'string') {
+      messagesCheckError = 'Role must be a string.';
+      break;
+    }
+
+    if (typeof message.content != 'string') {
+      messagesCheckError = 'Content must be a string.';
+      break;
+    }
+
+    if (!allowedClientRoles.includes(message.role)) {
+      messagesCheckError = 'Role is not allowed.';
+      break;
+    }
+  }
+
+  if (messagesCheckError) {
+    return res.atomic(() => {
+      res
+        .status(400)
+        .send(messagesCheckError);
+    });
+  }
+
+  // const chatCompletion = await openai.createChatCompletion({
+  //   model: openaiChatModel,
+  //   messages: [
+  //     ...basePrompt,
+  //     ...body.messages
+  //   ]
+  // });
+
+  // const data = chatCompletion.data.choices[0];
+
+  const data = {
+    message: {
+      role: 'assistant',
+      content: 'Hello, demo response message!'
+    }
+  };
+
+  res.json(data);
 });
 
 app.listen(3000);
