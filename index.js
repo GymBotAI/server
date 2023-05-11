@@ -5,6 +5,8 @@ const basePrompt = require('./prompt.json');
 
 const app = new HyperExpress.Server();
 
+const isDevelopment = process.env.NODE_ENV != 'production';
+
 const openaiChatModel = 'gpt-3.5-turbo';
 const openai = new OpenAIApi(new OpenAIConfig({
   apiKey: process.env.OPENAI_KEY
@@ -84,24 +86,32 @@ app.post('/chat', async (req, res) => {
     });
   }
 
-  // const chatCompletion = await openai.createChatCompletion({
-  //   model: openaiChatModel,
-  //   messages: [
-  //     ...basePrompt,
-  //     ...body.messages
-  //   ]
-  // });
+  let data = null;
 
-  // const data = chatCompletion.data.choices[0];
+  if (isDevelopment) {
+    data = {
+      message: {
+        role: 'assistant',
+        content: 'Hello, demo response message!'
+      }
+    };
+  } else {
+    const chatCompletion = await openai.createChatCompletion({
+      model: openaiChatModel,
+      messages: [
+        ...basePrompt,
+        ...messages
+      ]
+    });
 
-  const data = {
-    message: {
-      role: 'assistant',
-      content: 'Hello, demo response message!'
-    }
-  };
+    data = chatCompletion.data.choices[0];
+  }
 
   res.json(data);
 });
 
 app.listen(3000);
+
+if (isDevelopment) {
+  console.warn('In development mode!');
+}
