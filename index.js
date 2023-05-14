@@ -42,6 +42,9 @@ app.get('/*', (req, res) => {
 
 // ChatGPT endpoint
 app.post('/chat', async (req, res) => {
+  // Avoid caching
+  res.set('cache-control', 'no-store');
+
   const { secret, messages } = await req.json();
 
   if (!(messages instanceof Array)) {
