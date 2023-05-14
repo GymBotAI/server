@@ -99,12 +99,17 @@ app.post('/chat', async (req, res) => {
       }
     };
   } else {
+    const realMessages = [
+      ...basePrompt,
+      ...messages
+    ];
+
+    // debug
+    console.dir(realMessages, { depth: null });
+
     const chatCompletion = await openai.createChatCompletion({
       model: openaiChatModel,
-      messages: [
-        ...basePrompt,
-        ...messages
-      ]
+      messages: realMessages
     });
 
     data = chatCompletion.data.choices[0];
