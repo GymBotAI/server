@@ -8,7 +8,6 @@
   },
   "keywords": [],
   "author": "LuisAFK",
-  "license": "ISC",
   "dependencies": {
     "@types/node": "^18.0.6",
     "hyper-express": "^6.5.8",
