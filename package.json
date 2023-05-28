@@ -1,7 +1,7 @@
 {
   "name": "gymbot-ai-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "The server that handles the ChatGPT API for the GymBot AI app.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
