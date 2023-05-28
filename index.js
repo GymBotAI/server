@@ -12,8 +12,7 @@ const openai = new OpenAIApi(new OpenAIConfig({
   apiKey: process.env.OPENAI_KEY
 }));
 
-// message roles allowed from the client
-const allowedClientRoles = ['user', 'assistant'];
+const streamEndToken = '[DONE]';
 
 // static files middleware
 const static = new LiveDirectory(__dirname + '/static', {
@@ -41,81 +40,95 @@ app.get('/*', (req, res) => {
 });
 
 // ChatGPT endpoint
-app.post('/chat', async (req, res) => {
-  // Avoid caching
-  res.set('cache-control', 'no-store');
+app.ws('/chat', {
+  idle_timeout: 60,
+  max_payload_length: 32 * 1024
+}, async (ws) => {
+  let authed = false;
+  let messages = basePrompt;
 
-  const { secret, messages } = await req.json();
-
-  if (!(messages instanceof Array)) {
-    return res.atomic(() => {
-      res
-        .status(400)
-        .send('Messages must be an array (of objects).');
-    });
-  }
-
-  if (secret != process.env.REQ_SECRET) {
-    return res.atomic(() => {
-      res
-        .status(401)
-        .send('Invalid or no secret provided.\n');
-    });
-  }
-
-  let messagesCheckError = null;
-  for (const message of messages) {
-    if (typeof message.role != 'string') {
-      messagesCheckError = 'Role must be a string.';
-      break;
+  ws.on('message', async data => {
+    if (!authed) {
+      authed = data == process.env.REQ_SECRET;
+      return;
     }
 
-    if (typeof message.content != 'string') {
-      messagesCheckError = 'Content must be a string.';
-      break;
+    if (isDevelopment) {
+      ws.atomic(() => {
+        ws.send('Hello, demo response message! (Streaming)');
+        ws.send(streamEndToken);
+      });
+      return;
     }
 
-    if (!allowedClientRoles.includes(message.role)) {
-      messagesCheckError = 'Role is not allowed.';
-      break;
-    }
-  }
-
-  if (messagesCheckError) {
-    return res.atomic(() => {
-      res
-        .status(400)
-        .send(messagesCheckError);
+    messages.push({
+      role: 'user',
+      content: data
     });
-  }
 
-  let data = null;
+    try {
+      const chatCompletion = await openai.createChatCompletion({
+        model: openaiChatModel,
+        messages,
+        stream: true
+      }, {
+        responseType: 'stream'
+      });
 
-  if (isDevelopment) {
-    data = {
-      message: {
+      messages.push({
         role: 'assistant',
-        content: 'Hello, demo response message!'
-      }
-    };
-  } else {
-    const realMessages = [
-      ...basePrompt,
-      ...messages
-    ];
+        content: ''
+      });
 
-    // debug
-    console.dir(realMessages, { depth: null });
+      chatCompletion.data.on('data', (raw) => {
+        const chunks = raw.toString().split('\n\n').map(s => s.replace(/^data: /, ''));
 
-    const chatCompletion = await openai.createChatCompletion({
-      model: openaiChatModel,
-      messages: realMessages
-    });
+        let finalChunk = '';
+        let didEnd = false;
 
-    data = chatCompletion.data.choices[0];
-  }
+        for (const chunk of chunks) {
+          if (!chunk) {
+            continue;
+          }
 
-  res.json(data);
+          if (chunk == streamEndToken) {
+            didEnd = true;
+            break;
+          }
+
+          let data = null;
+          try {
+            data = JSON.parse(chunk);
+          } catch (err) {
+            console.error('Error parsing chunk:', err, 'Chunk is', JSON.stringify(chunk));
+            return;
+          }
+
+          const chunkContent = data.choices[0]?.delta?.content;
+
+          if (!chunkContent) {
+            continue;
+          }
+
+          finalChunk += chunkContent;
+        }
+
+        messages[messages.length - 1].content += finalChunk;
+
+        ws.send(finalChunk);
+
+        if (didEnd) {
+          ws.send(streamEndToken);
+        }
+      });
+
+      chatCompletion.data.on('end', () => {
+        ws.send(streamEndToken);
+      });
+    } catch (err) {
+      console.error('Error in chatCompletion:', err);
+    }
+  });
 });
 
 app.listen(3000);
