@@ -60,7 +60,7 @@ app.ws(
 
       if (isDevelopment) {
         ws.atomic(() => {
-          ws.send("Hello, demo response message! (Streaming)");
+          ws.send("Hello, demo response message!");
           ws.send(streamEndToken);
         });
         return;
