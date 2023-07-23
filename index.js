@@ -63,14 +63,16 @@ app.ws(
         //   ws.send("Hello, demo response message!");
         //   ws.send(streamEndToken);
         // });
-        let intv = 0;
-        intv = setInterval(() => {
-          ws.send('aa\n');
-        }, 50);
-        setTimeout(() => {
-          clearInterval(intv);
-          ws.send(streamEndToken);
-        }, 5000);
+        // let intv = 0;
+        // intv = setInterval(() => {
+        //   ws.send('aa\n');
+        // }, 50);
+        // setTimeout(() => {
+        //   clearInterval(intv);
+        //   ws.send(streamEndToken);
+        // }, 5000);
+        ws.send('This is a paragraph\n\nThis is another');
+        ws.send(streamEndToken);
         return;
       }
 
