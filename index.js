@@ -71,7 +71,9 @@ app.ws(
         //   clearInterval(intv);
         //   ws.send(streamEndToken);
         // }, 5000);
-        ws.send('This is a paragraph\n\nThis is another');
+        ws.send('This is a paragraph');
+        ws.send(streamEndToken);
+        ws.send('This is another');
         ws.send(streamEndToken);
         return;
       }
