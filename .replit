@@ -18,6 +18,7 @@ channel = "stable-22_11"
 XDG_CONFIG_HOME = "$REPL_HOME/.config"
 PATH = "$XDG_CONFIG_HOME/npm/node_global/bin:/home/runner/$REPL_HOME/node_modules/.bin"
 npm_config_prefix = "$XDG_CONFIG_HOME/npm/node_global"
+PNPM_HOME = "$XDG_CONFIG_HOME/pnpm"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", ".config", "package.json", "package-lock.json"]
