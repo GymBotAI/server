@@ -17,7 +17,7 @@ const openai = new OpenAIApi(
 const streamEndToken = "[DONE]";
 
 // static files middleware
-const static = new LiveDirectory(__dirname + "/static", {
+const staticFiles = new LiveDirectory(__dirname + "/static", {
   static: false, // set this to true in prod
   filter: {
     ignore: {
@@ -29,7 +29,7 @@ const static = new LiveDirectory(__dirname + "/static", {
 // serve static files
 app.get("/*", (req, res) => {
   const path = req.path == "/" ? "/index.html" : req.path;
-  const file = static.get(path);
+  const file = staticFiles.get(path);
 
   // return a 404 if no asset/file exists on the derived path
   if (!file) return res.status(404).send();
