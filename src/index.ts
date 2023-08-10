@@ -1,7 +1,7 @@
 import HyperExpress from "hyper-express";
 import LiveDirectory from "live-directory";
 import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
-import basePrompt from "./prompt.json";
+import basePrompt from "./prompt.json" assert { type: "json" };
 
 const app = new HyperExpress.Server();
 

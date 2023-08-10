@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "importHelpers": true,
+    "module": "nodenext",
     "strict": true,
     "outDir": "dist"
   }
