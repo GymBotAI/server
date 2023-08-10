@@ -1,7 +1,7 @@
-const HyperExpress = require("hyper-express");
-const LiveDirectory = require("live-directory");
-const { Configuration: OpenAIConfig, OpenAIApi } = require("openai");
-const basePrompt = require("./prompt.json");
+import HyperExpress from "hyper-express";
+import LiveDirectory from "live-directory";
+import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
+import basePrompt from "./prompt.json";
 
 const app = new HyperExpress.Server();
 
