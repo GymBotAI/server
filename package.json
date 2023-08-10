@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "The server that handles the ChatGPT API for the GymBot AI app.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write ."
