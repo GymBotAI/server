@@ -17,7 +17,7 @@ const openai = new OpenAIApi(
 const streamEndToken = "[DONE]";
 
 // static files middleware
-const staticFiles = new LiveDirectory(__dirname + "/static", {
+const staticFiles = new LiveDirectory(__dirname + "/../static", {
   static: false, // set this to true in prod
   filter: {
     ignore: {
