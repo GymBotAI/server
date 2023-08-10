@@ -1,5 +1,8 @@
 entrypoint = "index.js"
 
+compile = "esbuild index.ts"
+run = "node dist/index.js"
+
 hidden = [".config", "package-lock.json"]
 
 [nix]
