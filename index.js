@@ -143,7 +143,15 @@ app.ws(
 
           messages[messages.length - 1].content += finalChunk;
 
-          ws.send(finalChunk);
+          // Split message newlines into different messages
+          // A.K.A. chunking
+          const lines = finalChunk.split(/(?:\r?\n){1,2}/);
+          for (let i in lines) {
+            ws.send(lines[i]);
+            if (i < lines.length - 1) {
+              ws.send(streamEndToken);
+            }
+          }
 
           if (didEnd) {
             ws.send(streamEndToken);
