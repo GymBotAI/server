@@ -18,11 +18,11 @@ PNPM_HOME = "$XDG_CONFIG_HOME/pnpm"
 requiredFiles = [".replit", "replit.nix", ".config", "package.json", "package-lock.json"]
 
 [packager]
-language = "nodejs"
+language = "nodejs-pnpm"
 
   [packager.features]
   packageSearch = true
-  guessImports = true
+  guessImports = false
   enabledForHosting = false
 
 [unitTest]
