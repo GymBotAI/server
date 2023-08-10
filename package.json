@@ -10,12 +10,12 @@
   "keywords": [],
   "author": "LuisAFK",
   "dependencies": {
-    "@types/node": "^18.0.6",
     "hyper-express": "^6.5.8",
     "live-directory": "^3.0.3",
     "openai": "^3.2.1"
   },
   "devDependencies": {
+    "@types/node": "^18.0.6",
     "prettier": "^2.8.8"
   }
 }
