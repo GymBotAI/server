@@ -15,7 +15,7 @@ npm_config_prefix = "$XDG_CONFIG_HOME/npm/node_global"
 PNPM_HOME = "$XDG_CONFIG_HOME/pnpm"
 
 [gitHubImport]
-requiredFiles = [".replit", "replit.nix", ".config", "package.json", "package-lock.json"]
+requiredFiles = [".replit", "replit.nix", ".config", "package.json"]
 
 [packager]
 language = "nodejs-pnpm"
