@@ -2,10 +2,12 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import HyperExpress from "hyper-express";
 import LiveDirectory from "live-directory";
-import basePrompt from "./prompt.json" assert { type: "json" };
+import _basePrompt from "./prompt.json" assert { type: "json" };
 
 import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
 import type { ChatCompletionRequestMessage } from "openai";
+
+const basePrompt = _basePrompt as ChatCompletionRequestMessage[];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
