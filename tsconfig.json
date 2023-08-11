@@ -4,6 +4,7 @@
     "module": "nodenext",
     "resolveJsonModule": true,
     "strict": true,
+    "rootDir": "src",
     "outDir": "dist"
   }
 }
