@@ -4,3 +4,4 @@ node_modules
 .upm
 .git
 pnpm-lock.yaml
+/dist
