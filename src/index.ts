@@ -2,8 +2,10 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import HyperExpress from "hyper-express";
 import LiveDirectory from "live-directory";
-import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
 import basePrompt from "./prompt.json" assert { type: "json" };
+
+import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
+import type { ChatCompletionRequestMessage } from "openai";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -54,7 +56,7 @@ app.ws(
   },
   async (ws) => {
     let authed = false;
-    let messages = basePrompt;
+    let messages: ChatCompletionRequestMessage[] = basePrompt;
 
     ws.on("message", async (data) => {
       if (!authed) {
