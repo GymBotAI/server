@@ -7,7 +7,9 @@ import _basePrompt from "./prompt.json" assert { type: "json" };
 import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
 import type { ChatCompletionRequestMessage } from "openai";
 
-const basePrompt = _basePrompt as ChatCompletionRequestMessage[];
+const basePrompt = _basePrompt as {
+  messages: ChatCompletionRequestMessage[];
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -58,7 +60,7 @@ app.ws(
   },
   async (ws) => {
     let authed = false;
-    let messages: ChatCompletionRequestMessage[] = basePrompt;
+    let messages: ChatCompletionRequestMessage[] = basePrompt.messages;
 
     ws.on("message", async (data) => {
       if (!authed) {
