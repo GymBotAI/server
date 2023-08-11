@@ -6,7 +6,7 @@ run = "node dist/index.js"
 hidden = [".config", "package-lock.json"]
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-23_05"
 
 [env]
 XDG_CONFIG_HOME = "$REPL_HOME/.config"
