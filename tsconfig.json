@@ -2,6 +2,7 @@
   "compilerOptions": {
     "importHelpers": true,
     "module": "nodenext",
+    "resolveJsonModule": true,
     "strict": true,
     "outDir": "dist"
   }
