@@ -22,7 +22,7 @@ const streamEndToken = "[DONE]";
 
 // static files middleware
 const staticFiles = new LiveDirectory(__dirname + "/../static", {
-  static: false, // set this to true in prod
+  static: !isDevelopment,
   filter: {
     ignore: {
       extensions: ["env"],
