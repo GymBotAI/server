@@ -1,7 +1,11 @@
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import HyperExpress from "hyper-express";
 import LiveDirectory from "live-directory";
 import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
 import basePrompt from "./prompt.json" assert { type: "json" };
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = new HyperExpress.Server();
 
