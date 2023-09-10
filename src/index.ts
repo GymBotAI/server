@@ -26,6 +26,8 @@ const openai = new OpenAIApi(
 
 const streamEndToken = "[DONE]";
 
+const chatSecret = process.env.REQ_SECRET;
+
 // static files middleware
 const staticFiles = new LiveDirectory(__dirname + "/../static", {
   static: !isDevelopment,
@@ -66,7 +68,12 @@ app.ws(
 
     ws.on("message", async (data) => {
       if (!authed) {
-        authed = data == process.env.REQ_SECRET;
+        if (chatSecret) {
+          authed = data == chatSecret;
+        } else {
+          console.warn("REQ_SECRET env var not found, skipping auth");
+          authed = true;
+        }
 
         if (authed) {
           console.debug(`[${ws.ip}]`, "WS client authenticated");
