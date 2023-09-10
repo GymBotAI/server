@@ -1,7 +1,10 @@
 entrypoint = "src/index.ts"
 
-compile = "pnpm run build"
-run = "pnpm start"
+# For some reason, the compile command doesn't
+# have access to $PATH so we need to specify
+# the full path to the PNPM executable
+compile = ["./.config/npm/node_global/bin/pnpm", "run", "build"]
+run = ["pnpm", "start"]
 
 hidden = [".config"]
 
