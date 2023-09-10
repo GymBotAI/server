@@ -6,7 +6,7 @@ entrypoint = "src/index.ts"
 compile = ["./.config/npm/node_global/bin/pnpm", "run", "build"]
 run = ["pnpm", "start"]
 
-hidden = [".config"]
+hidden = [".config", "dist"]
 
 [nix]
 channel = "stable-23_05"
