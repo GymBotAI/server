@@ -3,7 +3,7 @@ entrypoint = "index.js"
 compile = "pnpm run build"
 run = "pnpm start"
 
-hidden = [".config", "package-lock.json"]
+hidden = [".config"]
 
 [nix]
 channel = "stable-23_05"
