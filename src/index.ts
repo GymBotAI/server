@@ -59,7 +59,7 @@ app.ws(
     max_payload_length: 32 * 1024,
   },
   async (ws) => {
-    console.debug(`[${ws.ip}]`, "New WS connection");
+    console.debug(`[${ws.ip}]`, "WS client connected");
 
     let authed = false;
     let messages: ChatCompletionRequestMessage[] = basePrompt.messages;
@@ -183,6 +183,10 @@ app.ws(
       } catch (err) {
         console.error("Error in chatCompletion:", err);
       }
+    });
+
+    ws.on("close", () => {
+      console.debug(`[${ws.ip}]`, "WS client disconnected");
     });
   }
 );
