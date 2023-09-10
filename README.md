@@ -15,7 +15,7 @@ pnpm i
 After that, to build the TypeScript source code into JavaScript:
 
 ```sh
-pnpm run setup
+pnpm run build
 ```
 
 Then, to run the server:
