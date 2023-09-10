@@ -9,7 +9,7 @@ import type { ChatCompletionRequestMessage } from "openai";
 
 const basePrompt = _basePrompt as {
   messages: ChatCompletionRequestMessage[];
-}
+};
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -178,7 +178,7 @@ app.ws(
   }
 );
 
-app.listen(3000);
+app.listen(parseInt(process.env.PORT || "3001"));
 
 if (isDevelopment) {
   console.warn("In development mode!");
