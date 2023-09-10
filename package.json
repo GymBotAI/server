@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "setup": "esbuild --outdir=dist src/index.ts && ln -fs \"../src/prompt.json\" dist",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "LuisAFK",

@@ -13,13 +13,15 @@ pnpm i
 ```
 
 After that, to build the TypeScript source code into JavaScript:
+
 ```sh
-./node_modules/.bin/esbuild --outdir=dist src/index.ts && ln -fs "../src/prompt.json" dist
+pnpm run setup
 ```
 
 Then, to run the server:
+
 ```sh
-node dist/index.js
+pnpm start
 ```
 
 **Note:** remember to format your code by running `pnpm format` before pushing,
