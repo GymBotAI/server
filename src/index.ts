@@ -59,14 +59,23 @@ app.ws(
     max_payload_length: 32 * 1024,
   },
   async (ws) => {
+    console.debug(`[${ws.ip}]`, "New WS connection");
+
     let authed = false;
     let messages: ChatCompletionRequestMessage[] = basePrompt.messages;
 
     ws.on("message", async (data) => {
       if (!authed) {
         authed = data == process.env.REQ_SECRET;
+
+        if (authed) {
+          console.debug(`[${ws.ip}]`, "WS client authenticated");
+        }
+
         return;
       }
+
+      console.debug(`[${ws.ip}]`, "WS message:", data);
 
       if (isDevelopment) {
         // ws.atomic(() => {
