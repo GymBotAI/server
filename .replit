@@ -2,11 +2,7 @@ entrypoint = "src/index.ts"
 
 modules = ["bun-1.0:v1-20230911-f253fb1"]
 
-# For some reason, the compile command doesn't
-# have access to $PATH so we need to specify
-# the full path to the PNPM executable
-compile = ["./.config/npm/node_global/bin/pnpm", "run", "build"]
-run = ["pnpm", "start"]
+run = ["bun", "."]
 
 hidden = [".config", "dist"]
 
