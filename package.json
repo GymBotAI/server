@@ -1,21 +1,21 @@
 {
   "name": "gymbot-ai-server",
   "version": "1.0.0",
-  "description": "The server that handles the ChatGPT API for the GymBot AI app.",
-  "main": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write ."
-  },
-  "keywords": [],
   "author": "LuisAFK",
-  "dependencies": {
-    "openai": "^3.2.1"
-  },
+  "main": "src/index.ts",
   "devDependencies": {
     "@types/node": "^18.0.6",
     "bun-types": "^1.0.1",
     "prettier": "^2.8.8"
+  },
+  "description": "The server that handles the ChatGPT API for the GymBot AI app.",
+  "keywords": [],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write ."
+  },
+  "type": "module",
+  "dependencies": {
+    "openai": "^4.6.0"
   }
 }
