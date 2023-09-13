@@ -1,7 +1,5 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import HyperExpress from "hyper-express";
-import LiveDirectory from "live-directory";
 import _basePrompt from "./prompt.json" assert { type: "json" };
 
 import { Configuration as OpenAIConfig, OpenAIApi } from "openai";
@@ -12,8 +10,6 @@ const basePrompt = _basePrompt as {
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const app = new HyperExpress.Server();
 
 const isDevelopment = process.env.NODE_ENV != "production";
 
@@ -28,67 +24,68 @@ const streamEndToken = "[DONE]";
 
 const chatSecret = process.env.REQ_SECRET;
 
-// static files middleware
-const staticFiles = new LiveDirectory(__dirname + "/../static", {
-  static: !isDevelopment,
-  filter: {
-    ignore: {
-      extensions: ["env"],
+type WebSocketData = {
+  /**
+   * Wether the client has sent the correct
+   * `chatSecret` to authenticate
+   */
+  authed: boolean;
+
+  /**
+   * The messages that have been sent
+   * between the client and the server
+   */
+  messages: ChatCompletionRequestMessage[];
+};
+
+Bun.serve<WebSocketData>({
+  development: isDevelopment,
+  port: process.env.PORT || "3001",
+  fetch(req, server) {
+    // upgrade the request to a WebSocket
+    if (server.upgrade(req, {
+      data: {
+        authed: false,
+        messages: []
+      }
+    })) {
+      return;
+    }
+
+    return new Response("Upgrade failed :(", { status: 500 });
+  },
+  websocket: {
+    open(ws) {
+      console.debug(`[${ws.remoteAddress}]`, "WS client connected");
     },
-  },
-});
+    message(ws, message) {
+      if (typeof message != 'string') {
+        return;
+      }
 
-// serve static files
-app.get("/*", (req, res) => {
-  const path = req.path == "/" ? "/index.html" : req.path;
-  const file = staticFiles.get(path);
-
-  // return a 404 if no asset/file exists on the derived path
-  if (!file) return res.status(404).send();
-
-  if (file.cached) {
-    res.send(file.content);
-  } else {
-    file.stream().pipe(res);
-  }
-});
-
-// ChatGPT endpoint
-app.ws(
-  "/chat",
-  {
-    idle_timeout: 60,
-    max_payload_length: 32 * 1024,
-  },
-  async (ws) => {
-    console.debug(`[${ws.ip}]`, "WS client connected");
-
-    let authed = false;
-    let messages: ChatCompletionRequestMessage[] = basePrompt.messages;
-
-    ws.on("message", async (data) => {
-      if (!authed) {
+      // WebSocket auth
+      if (!ws.data.authed) {
         if (chatSecret) {
-          authed = data == chatSecret;
+          ws.data.authed = message == chatSecret;
         } else {
           console.warn("REQ_SECRET env var not found, skipping auth");
-          authed = true;
+          ws.data.authed = true;
         }
 
-        if (authed) {
-          console.debug(`[${ws.ip}]`, "WS client authenticated");
+        if (ws.data.authed) {
+          console.debug(`[${ws.remoteAddress}]`, "WS client authenticated");
         }
 
         return;
       }
 
-      console.debug(`[${ws.ip}]`, "WS message:", data);
+      console.debug(`[${ws.remoteAddress}]`, "WS message:", message);
 
+      // Demo messages in development
       if (isDevelopment) {
-        // ws.atomic(() => {
-        //   ws.send("Hello, demo response message!");
-        //   ws.send(streamEndToken);
-        // });
+        // ws.send("Hello, demo response message!");
+        // ws.send(streamEndToken);
+        //
         // let intv = 0;
         // intv = setInterval(() => {
         //   ws.send('aa\n');
@@ -97,13 +94,22 @@ app.ws(
         //   clearInterval(intv);
         //   ws.send(streamEndToken);
         // }, 5000);
+
         ws.send("This is a paragraph");
         ws.send(streamEndToken);
         ws.send("This is another");
         ws.send(streamEndToken);
         return;
       }
-
+    },
+  }
+}
+  /*{
+    idle_timeout: 60,
+    max_payload_length: 32 * 1024,
+  },
+  async (ws) => {
+    ws.on("message", async (data) => {
       messages.push({
         role: "user",
         content: data,
@@ -195,10 +201,8 @@ app.ws(
     ws.on("close", () => {
       console.debug(`[${ws.ip}]`, "WS client disconnected");
     });
-  }
+  }*/
 );
-
-app.listen(parseInt(process.env.PORT || "3001"));
 
 if (isDevelopment) {
   console.warn("In development mode!");

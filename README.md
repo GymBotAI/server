@@ -4,25 +4,19 @@ The server that handles the ChatGPT API for the GymBot AI app.
 
 ## Development
 
-You'll need Node.js v18 and PNPM.
+You'll need Bun.
 
-Then, clone this repository. Install dependencies:
-
-```sh
-pnpm i
-```
-
-After that, to build the TypeScript source code into JavaScript:
+Clone this repository. Install dependencies:
 
 ```sh
-pnpm run build
+bun i
 ```
 
 Then, to run the server:
 
 ```sh
-pnpm start
+bun .
 ```
 
-**Note:** remember to format your code by running `pnpm format` before pushing,
+**Note:** remember to format your code by running `bun format` before pushing,
 to keep our code and commits tidy.

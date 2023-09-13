@@ -2,27 +2,20 @@
   "name": "gymbot-ai-server",
   "version": "1.0.0",
   "description": "The server that handles the ChatGPT API for the GymBot AI app.",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write .",
-    "build": "esbuild --outdir=dist src/index.ts && ln -fs \"../src/prompt.json\" dist",
-    "start": "node dist/index.js",
-    "dev": "pnpm build && pnpm start"
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "LuisAFK",
   "dependencies": {
-    "hyper-express": "^6.5.8",
-    "live-directory": "^3.0.3",
     "openai": "^3.2.1"
   },
   "devDependencies": {
     "@types/node": "^18.0.6",
-    "esbuild": "^0.19.0",
-    "prettier": "^2.8.8",
-    "tslib": "^2.6.1",
-    "typescript": "^5.1.6"
+    "bun-types": "^1.0.1",
+    "prettier": "^2.8.8"
   }
 }
