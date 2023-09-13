@@ -61,7 +61,10 @@ Bun.serve<WebSocketData>(
       open(ws) {
         console.debug(`[${ws.remoteAddress}]`, "WS client connected");
       },
-      message(ws, message) {
+      close(ws) {
+        console.debug(`[${ws.remoteAddress}]`, "WS client disconnected");
+      },
+      async message(ws, message) {
         if (typeof message != "string") {
           return;
         }
@@ -104,107 +107,97 @@ Bun.serve<WebSocketData>(
           ws.send(streamEndToken);
           return;
         }
+
+        ws.data.messages.push({
+          role: "user",
+          content: message,
+        
+        });
+
+        try {
+          const chatCompletion = await openai.createChatCompletion(
+            {
+              model: openaiChatModel,
+              messages: ws.data.messages,
+              stream: true,
+            },
+            {
+              responseType: "stream",
+            }
+          );
+  
+          ws.data.messages.push({
+            role: "assistant",
+            content: "",
+          });
+  
+          chatCompletion.data.on("data", (raw) => {
+            const chunks = raw
+              .toString()
+              .split("\n\n")
+              .map((s) => s.replace(/^data: /, ""));
+  
+            let finalChunk = "";
+            let didEnd = false;
+  
+            for (const chunk of chunks) {
+              if (!chunk) {
+                continue;
+              }
+  
+              if (chunk == streamEndToken) {
+                didEnd = true;
+                break;
+              }
+  
+              let data = null;
+              try {
+                data = JSON.parse(chunk);
+              } catch (err) {
+                console.error(
+                  "Error parsing chunk:",
+                  err,
+                  "Chunk is",
+                  JSON.stringify(chunk)
+                );
+                return;
+              }
+  
+              const chunkContent = data.choices[0]?.delta?.content;
+  
+              if (!chunkContent) {
+                continue;
+              }
+  
+              finalChunk += chunkContent;
+            }
+  
+            ws.data.messages[ws.data.messages.length - 1].content += finalChunk;
+  
+            // Split message newlines into different messages
+            // A.K.A. chunking
+            const lines = finalChunk.split(/(?:\r?\n){1,2}/);
+            for (let i in lines) {
+              ws.send(lines[i]);
+              if (i < lines.length - 1) {
+                ws.send(streamEndToken);
+              }
+            }
+  
+            if (didEnd) {
+              ws.send(streamEndToken);
+            }
+          });
+  
+          chatCompletion.data.on("end", () => {
+            ws.send(streamEndToken);
+          });
+        } catch (err) {
+          console.error("Error in chatCompletion:", err);
+        }
       },
     },
   }
-  /*{
-    idle_timeout: 60,
-    max_payload_length: 32 * 1024,
-  },
-  async (ws) => {
-    ws.on("message", async (data) => {
-      messages.push({
-        role: "user",
-        content: data,
-      });
-
-      try {
-        const chatCompletion = await openai.createChatCompletion(
-          {
-            model: openaiChatModel,
-            messages,
-            stream: true,
-          },
-          {
-            responseType: "stream",
-          }
-        );
-
-        messages.push({
-          role: "assistant",
-          content: "",
-        });
-
-        chatCompletion.data.on("data", (raw) => {
-          const chunks = raw
-            .toString()
-            .split("\n\n")
-            .map((s) => s.replace(/^data: /, ""));
-
-          let finalChunk = "";
-          let didEnd = false;
-
-          for (const chunk of chunks) {
-            if (!chunk) {
-              continue;
-            }
-
-            if (chunk == streamEndToken) {
-              didEnd = true;
-              break;
-            }
-
-            let data = null;
-            try {
-              data = JSON.parse(chunk);
-            } catch (err) {
-              console.error(
-                "Error parsing chunk:",
-                err,
-                "Chunk is",
-                JSON.stringify(chunk)
-              );
-              return;
-            }
-
-            const chunkContent = data.choices[0]?.delta?.content;
-
-            if (!chunkContent) {
-              continue;
-            }
-
-            finalChunk += chunkContent;
-          }
-
-          messages[messages.length - 1].content += finalChunk;
-
-          // Split message newlines into different messages
-          // A.K.A. chunking
-          const lines = finalChunk.split(/(?:\r?\n){1,2}/);
-          for (let i in lines) {
-            ws.send(lines[i]);
-            if (i < lines.length - 1) {
-              ws.send(streamEndToken);
-            }
-          }
-
-          if (didEnd) {
-            ws.send(streamEndToken);
-          }
-        });
-
-        chatCompletion.data.on("end", () => {
-          ws.send(streamEndToken);
-        });
-      } catch (err) {
-        console.error("Error in chatCompletion:", err);
-      }
-    });
-
-    ws.on("close", () => {
-      console.debug(`[${ws.ip}]`, "WS client disconnected");
-    });
-  }*/
 );
 
 if (isDevelopment) {
