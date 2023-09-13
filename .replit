@@ -55,7 +55,7 @@ support = true
     [debugger.interactive.launchMessage]
     command = "launch"
     type = "request"
-    
+
       [debugger.interactive.launchMessage.arguments]  
       args = []
       console = "externalTerminal"
