@@ -4,7 +4,7 @@ modules = ["bun-1.0:v1-20230911-f253fb1"]
 
 run = ["bun", "."]
 
-hidden = [".config", "dist"]
+hidden = [".config", "bun.lockb"]
 
 [nix]
 channel = "stable-23_05"
