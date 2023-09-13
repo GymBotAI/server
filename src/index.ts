@@ -38,72 +38,75 @@ type WebSocketData = {
   messages: ChatCompletionRequestMessage[];
 };
 
-Bun.serve<WebSocketData>({
-  development: isDevelopment,
-  port: process.env.PORT || "3001",
-  fetch(req, server) {
-    // upgrade the request to a WebSocket
-    if (server.upgrade(req, {
-      data: {
-        authed: false,
-        messages: []
+Bun.serve<WebSocketData>(
+  {
+    development: isDevelopment,
+    port: process.env.PORT || "3001",
+    fetch(req, server) {
+      // upgrade the request to a WebSocket
+      if (
+        server.upgrade(req, {
+          data: {
+            authed: false,
+            messages: [],
+          },
+        })
+      ) {
+        return;
       }
-    })) {
-      return;
-    }
 
-    return new Response("Upgrade failed :(", { status: 500 });
-  },
-  websocket: {
-    open(ws) {
-      console.debug(`[${ws.remoteAddress}]`, "WS client connected");
+      return new Response("Upgrade failed :(", { status: 500 });
     },
-    message(ws, message) {
-      if (typeof message != 'string') {
-        return;
-      }
-
-      // WebSocket auth
-      if (!ws.data.authed) {
-        if (chatSecret) {
-          ws.data.authed = message == chatSecret;
-        } else {
-          console.warn("REQ_SECRET env var not found, skipping auth");
-          ws.data.authed = true;
+    websocket: {
+      open(ws) {
+        console.debug(`[${ws.remoteAddress}]`, "WS client connected");
+      },
+      message(ws, message) {
+        if (typeof message != "string") {
+          return;
         }
 
-        if (ws.data.authed) {
-          console.debug(`[${ws.remoteAddress}]`, "WS client authenticated");
+        // WebSocket auth
+        if (!ws.data.authed) {
+          if (chatSecret) {
+            ws.data.authed = message == chatSecret;
+          } else {
+            console.warn("REQ_SECRET env var not found, skipping auth");
+            ws.data.authed = true;
+          }
+
+          if (ws.data.authed) {
+            console.debug(`[${ws.remoteAddress}]`, "WS client authenticated");
+          }
+
+          return;
         }
 
-        return;
-      }
+        console.debug(`[${ws.remoteAddress}]`, "WS message:", message);
 
-      console.debug(`[${ws.remoteAddress}]`, "WS message:", message);
+        // Demo messages in development
+        if (isDevelopment) {
+          // ws.send("Hello, demo response message!");
+          // ws.send(streamEndToken);
+          //
+          // let intv = 0;
+          // intv = setInterval(() => {
+          //   ws.send('aa\n');
+          // }, 50);
+          // setTimeout(() => {
+          //   clearInterval(intv);
+          //   ws.send(streamEndToken);
+          // }, 5000);
 
-      // Demo messages in development
-      if (isDevelopment) {
-        // ws.send("Hello, demo response message!");
-        // ws.send(streamEndToken);
-        //
-        // let intv = 0;
-        // intv = setInterval(() => {
-        //   ws.send('aa\n');
-        // }, 50);
-        // setTimeout(() => {
-        //   clearInterval(intv);
-        //   ws.send(streamEndToken);
-        // }, 5000);
-
-        ws.send("This is a paragraph");
-        ws.send(streamEndToken);
-        ws.send("This is another");
-        ws.send(streamEndToken);
-        return;
-      }
+          ws.send("This is a paragraph");
+          ws.send(streamEndToken);
+          ws.send("This is another");
+          ws.send(streamEndToken);
+          return;
+        }
+      },
     },
   }
-}
   /*{
     idle_timeout: 60,
     max_payload_length: 32 * 1024,
