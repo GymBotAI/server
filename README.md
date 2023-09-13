@@ -4,7 +4,7 @@ The server that handles the ChatGPT API for the GymBot AI app.
 
 ## Development
 
-You'll need Bun.
+You'll need [Bun](https://bun.sh).
 
 Clone this repository. Install dependencies:
 
