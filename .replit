@@ -18,7 +18,7 @@ npm_config_prefix = "$XDG_CONFIG_HOME/npm/node_global"
 requiredFiles = [".replit", "replit.nix", ".config", "package.json"]
 
 [packager]
-language = "nodejs-pnpm"
+language = "nodejs"
 
   [packager.features]
   packageSearch = true
