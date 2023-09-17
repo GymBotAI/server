@@ -13,7 +13,8 @@ const basePrompt = _basePrompt as {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const isDevelopment = process.env.NODE_ENV != "production";
+const isDevelopment =
+  !process.argv.includes("--prod") && process.env.NODE_ENV != "production";
 
 const openaiChatModel = "gpt-3.5-turbo";
 const openai = new OpenAI({

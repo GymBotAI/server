@@ -12,7 +12,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
-    "dev": "bun --watch ."
+    "dev": "bun --watch .",
+    "prod": "bun . --prod"
   },
   "type": "module",
   "dependencies": {
