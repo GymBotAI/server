@@ -11,7 +11,8 @@
   "keywords": [],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dev": "bun --watch ."
   },
   "type": "module",
   "dependencies": {
