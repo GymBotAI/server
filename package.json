@@ -1,5 +1,5 @@
 {
-  "name": "gymbot-ai-server",
+  "name": "@gymbot-ai/server",
   "version": "1.0.0",
   "author": "LuisAFK",
   "main": "src/index.ts",
