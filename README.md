@@ -15,7 +15,7 @@ bun i
 Then, to run the server:
 
 ```sh
-bun .
+bun dev
 ```
 
 **Note:** remember to format your code by running `bun format` before pushing,
