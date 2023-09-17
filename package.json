@@ -8,7 +8,12 @@
     "prettier": "^2.8.8"
   },
   "description": "The server that handles the ChatGPT API for the GymBot AI app.",
-  "keywords": [],
+  "keywords": [
+    "gymbot",
+    "ai",
+    "server",
+    "ws"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
