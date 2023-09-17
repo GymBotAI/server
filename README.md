@@ -20,3 +20,11 @@ bun dev
 
 **Note:** remember to format your code by running `bun format` before pushing,
 to keep our code and commits tidy.
+
+## Production
+
+To run the server in production mode:
+
+```sh
+bun prod
+```
