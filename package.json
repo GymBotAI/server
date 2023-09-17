@@ -1,6 +1,7 @@
 {
   "name": "@gymbot-ai/server",
   "version": "1.0.0",
+  "private": true,
   "author": "LuisAFK",
   "main": "src/index.ts",
   "devDependencies": {
