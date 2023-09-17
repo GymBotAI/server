@@ -48,7 +48,7 @@ Bun.serve<WebSocketData>({
       server.upgrade(req, {
         data: {
           authed: false,
-          messages: [],
+          messages: basePrompt.messages,
         },
       })
     ) {
