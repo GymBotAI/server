@@ -90,22 +90,25 @@ const server = Bun.serve<WebSocketData>({
 
       // Demo messages in development
       if (isDevelopment) {
-        // ws.send("Hello, demo response message!");
-        // ws.send(streamEndToken);
-        //
-        // let intv = 0;
-        // intv = setInterval(() => {
-        //   ws.send('aa\n');
-        // }, 50);
-        // setTimeout(() => {
-        //   clearInterval(intv);
-        //   ws.send(streamEndToken);
-        // }, 5000);
-
-        ws.send("This is a paragraph");
-        ws.send(streamEndToken);
-        ws.send("This is another");
-        ws.send(streamEndToken);
+        const rand = Math.random();
+        if (rand > 0.9) {
+          ws.send("Hello, demo response message!");
+          ws.send(streamEndToken);
+        } else if (rand > 0.8) {
+          let intv: number | Timer = 0;
+          intv = setInterval(() => {
+            ws.send("aa\n");
+          }, 50);
+          setTimeout(() => {
+            clearInterval(intv);
+            ws.send(streamEndToken);
+          }, 5000);
+        } else {
+          ws.send("This is a paragraph");
+          ws.send(streamEndToken);
+          ws.send("This is another");
+          ws.send(streamEndToken);
+        }
         return;
       }
 
