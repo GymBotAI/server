@@ -164,4 +164,4 @@ if (isDevelopment) {
   console.warn("In development mode!");
 }
 
-console.log("Local server address:", getServerAddress(localIp, server.port));
+console.log("Local server address:", getServerAddress(localIp, server));
