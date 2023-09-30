@@ -2,7 +2,7 @@ entrypoint = "src/index.ts"
 
 modules = ["bun-1.0:v1-20230911-f253fb1"]
 
-run = ["bun", "."]
+run = ["bun", "dev"]
 
 hidden = [".config", "bun.lockb"]
 
