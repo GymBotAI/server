@@ -1,6 +1,7 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import _basePrompt from "./prompt.json" assert { type: "json" };
+import { localIp } from "./utils/ip";
 
 import OpenAI from "openai";
 type ChatCompletionMessage = Parameters<
@@ -39,7 +40,7 @@ type WebSocketData = {
   messages: ChatCompletionMessage[];
 };
 
-Bun.serve<WebSocketData>({
+const server = Bun.serve<WebSocketData>({
   development: isDevelopment,
   port: process.env.PORT || "3001",
   fetch(req, server) {
@@ -158,3 +159,5 @@ Bun.serve<WebSocketData>({
 if (isDevelopment) {
   console.warn("In development mode!");
 }
+
+console.log("Local server address:", `http://${localIp}:${server.port}`);
