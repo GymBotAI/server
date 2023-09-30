@@ -1,2 +1,7 @@
 #!/usr/bin/env bash
-echo "Bun not installed yet"
+
+if [ -f ~/.bun/bin/bun ]; then
+  ~/.bun/bin/bun "$@"
+else
+  echo "Bun not installed yet"
+fi
