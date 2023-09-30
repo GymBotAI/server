@@ -9,7 +9,7 @@ channel = "stable-23_05"
 
 [env]
 XDG_CONFIG_HOME = "$REPL_HOME/.config"
-PATH = "$XDG_CONFIG_HOME/npm/node_global/bin"
+PATH = "~/.bun/bin:$XDG_CONFIG_HOME/npm/node_global/bin"
 npm_config_prefix = "$XDG_CONFIG_HOME/npm/node_global"
 
 [gitHubImport]
