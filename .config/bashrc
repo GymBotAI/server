@@ -1,5 +1,6 @@
 # If Bun is not installed, install it
 if [ ! -f ~/.bun/bin/bun ]; then
+  echo "Installing Bun..."
   curl -fsSL https://bun.sh/install | bash
   exit
 else
