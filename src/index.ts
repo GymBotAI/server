@@ -1,4 +1,4 @@
-if (!process.env.OPENAI_KEY) {
+if (!process.env.OPENAI_API_KEY) {
   console.error("OPENAI_KEY env var not found");
   process.exit(1);
 }
@@ -25,9 +25,7 @@ const isDevelopment =
   !process.argv.includes("--prod") && process.env.NODE_ENV != "production";
 
 const openaiChatModel = "gpt-3.5-turbo";
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_KEY,
-});
+const openai = new OpenAI();
 
 const streamEndToken = "[DONE]";
 
