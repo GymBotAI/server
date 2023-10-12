@@ -141,6 +141,22 @@ const server = Bun.serve<WebSocketData>({
 
         break;
       }
+
+      case '/edit': {
+        if (req.method == 'POST') {
+          const body = await req.json();
+          await db.execute('UPDATE users SET NAME = ?, DOB = ?, GENDER = ?, WEIGHT = ?, HEIGHT = ? WHERE USERNAME = ?', [
+            body.NAME,
+            body.DOB,
+            body.GENDER,
+            body.WEIGHT,
+            body.HEIGHT,
+            body.USERNAME,
+          ]);
+        }
+
+        break;
+      }
     }
 
     return new Response("🎈/☁️🏃‍♀️");
