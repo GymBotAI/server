@@ -6,7 +6,9 @@ if (!process.env.OPENAI_API_KEY) {
 const chatSecret = process.env.REQ_SECRET;
 
 if (!chatSecret) {
-  console.warn("REQ_SECRET env var not found, clients will not be authenticated");
+  console.warn(
+    "REQ_SECRET env var not found, clients will not be authenticated"
+  );
 }
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
@@ -28,8 +30,6 @@ const openaiChatModel = "gpt-3.5-turbo";
 const openai = new OpenAI();
 
 const streamEndToken = "[DONE]";
-
-
 
 type WebSocketData = {
   /**
