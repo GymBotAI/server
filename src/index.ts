@@ -151,7 +151,7 @@ const server = Bun.serve<WebSocketData>({
         } else if (rand > 0.333) {
           let intv: number | Timer = 0;
           intv = setInterval(() => {
-            ws.send("aa\n");
+            ws.send(Math.random().toString(36).substring(2, 5));
           }, 50);
           setTimeout(() => {
             clearInterval(intv);
