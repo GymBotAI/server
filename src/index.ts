@@ -215,6 +215,8 @@ const server = Bun.serve<WebSocketData>({
 
 if (isDevelopment) {
   console.warn("In development mode!");
+} else {
+  console.log("In production mode!");
 }
 
 console.log("Local server address:", getServerAddress(server));
