@@ -44,19 +44,25 @@ const server = Bun.serve<WebSocketData>({
   development: isDevelopment,
   port: process.env.PORT || "3001",
   fetch(req, server) {
-    // upgrade the request to a WebSocket
-    if (
-      server.upgrade(req, {
-        data: {
-          authed: false,
-          messages: basePrompt.messages,
-        },
-      })
-    ) {
-      return;
+    const url = new URL(req.url);
+
+    if (url.pathname == "/chat") {
+      // upgrade the request to a WebSocket
+      if (
+        server.upgrade(req, {
+          data: {
+            authed: false,
+            messages: basePrompt.messages,
+          },
+        })
+      ) {
+        return;
+      } else {
+        return new Response("Upgrade failed :(", { status: 500 });
+      }
     }
 
-    return new Response("Upgrade failed :(", { status: 500 });
+    return new Response("🎈/☁️🏃‍♀️");
   },
   websocket: {
     open(ws) {
