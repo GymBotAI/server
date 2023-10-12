@@ -4,8 +4,6 @@ if (!chatSecret) {
   console.warn("REQ_SECRET env var not found, clients will not be authenticated");
 }
 
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import _basePrompt from "./prompt.json" assert { type: "json" };
 import { getServerAddress } from "./utils/addr";
 
@@ -17,8 +15,6 @@ type ChatCompletionMessage = Parameters<
 const basePrompt = _basePrompt as {
   messages: ChatCompletionMessage[];
 };
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isDevelopment =
   !process.argv.includes("--prod") && process.env.NODE_ENV != "production";
