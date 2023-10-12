@@ -107,6 +107,8 @@ const server = Bun.serve<WebSocketData>({
           const [rows] = await db.execute('SELECT * FROM users WHERE USERNAME = ?', [body.USERNAME]);
           return new Response(JSON.stringify(rows));
         }
+
+        break;
       }
 
       case '/login': {
@@ -136,6 +138,8 @@ const server = Bun.serve<WebSocketData>({
 
           return new Response(user.id);
         }
+
+        break;
       }
     }
 
