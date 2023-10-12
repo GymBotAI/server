@@ -13,6 +13,12 @@ if (!chatSecret) {
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
 import { getServerAddress } from "./utils/addr";
+import mysql from "mysql2/promise";
+
+import dbConfig from "./db-config";
+
+// Connect to the database
+const db = await mysql.createConnection(dbConfig);
 
 import OpenAI from "openai";
 type ChatCompletionMessage = Parameters<
@@ -48,22 +54,59 @@ type WebSocketData = {
 const server = Bun.serve<WebSocketData>({
   development: isDevelopment,
   port: process.env.PORT || "3001",
-  fetch(req, server) {
+  async fetch(req, server) {
     const url = new URL(req.url);
 
-    if (url.pathname == "/chat") {
-      // upgrade the request to a WebSocket
-      if (
-        server.upgrade(req, {
-          data: {
-            authed: false,
-            messages: basePrompt.messages,
-          },
-        })
-      ) {
-        return;
-      } else {
-        return new Response("Upgrade failed :(", { status: 500 });
+    switch (url.pathname) {
+      case "/chat": {
+        // upgrade the request to a WebSocket
+        if (
+          server.upgrade(req, {
+            data: {
+              authed: false,
+              messages: basePrompt.messages,
+            },
+          })
+        ) {
+          return;
+        } else {
+          return new Response("Upgrade failed :(", { status: 500 });
+        }
+      }
+
+      case '/send': {
+        if (req.method == "POST") {
+          const body = await req.json();
+          
+          await db.execute('INSERT INTO users (NAME, USERNAME, PASSWORD, DOB, WEIGHT, HEIGHT, GENDER) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+            body.NAME,
+            body.USERNAME,
+            body.PASSWORD,
+            body.DOB,
+            body.WEIGHT,
+            body.HEIGHT,
+            body.GENDER
+          ])
+        }
+
+        break;
+      }
+
+      case "/receive": {
+        if (req.method == "GET") {
+          const [rows] = await db.execute("SELECT * FROM users");
+          return new Response(JSON.stringify(rows));
+        }
+
+        break;
+      }
+
+      case '/search': {
+        if (req.method == "POST") {
+          const body = await req.json();
+          const [rows] = await db.execute('SELECT * FROM users WHERE USERNAME = ?', [body.USERNAME]);
+          return new Response(JSON.stringify(rows));
+        }
       }
     }
 
