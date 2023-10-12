@@ -1,0 +1,10 @@
+{
+  "overrides": [
+    {
+      "files": [".replit"],
+      "options": {
+        "parser": "toml"
+      }
+    }
+  ]
+}
