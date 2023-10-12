@@ -23,6 +23,7 @@
   },
   "type": "module",
   "dependencies": {
+    "mysql2": "^3.6.1",
     "openai": "^4.6.0"
   }
 }
