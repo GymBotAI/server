@@ -159,7 +159,7 @@ const server = Bun.serve<WebSocketData>({
       }
     }
 
-    return new Response("🎈/☁️🏃‍♀️");
+    return new Response();
   },
   websocket: {
     open(ws) {
