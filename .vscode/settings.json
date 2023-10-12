@@ -1,5 +1,6 @@
 {
   "files.associations": {
-    "bashrc": "shellscript"
+    "bashrc": "shellscript",
+    "bun": "shellscript"
   }
 }
