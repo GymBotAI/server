@@ -2,7 +2,13 @@ entrypoint = "src/index.ts"
 
 run = ["bun", "dev"]
 
-hidden = [".config", "bun.lockb", ".vscode"]
+hidden = [
+  ".config",
+  "bun.lockb",
+  ".vscode",
+  ".prettierignore",
+  ".gitignore"
+]
 
 [nix]
 channel = "stable-23_05"
