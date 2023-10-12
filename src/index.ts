@@ -108,6 +108,35 @@ const server = Bun.serve<WebSocketData>({
           return new Response(JSON.stringify(rows));
         }
       }
+
+      case '/login': {
+        if (req.method == 'POST') {
+          const body = await req.json();
+          const [rows] = await db.execute('SELECT * FROM users WHERE USERNAME = ? AND PASSWORD = ?', [body.username, body.password]);
+          
+          if (!('length' in rows)) {
+            return new Response('Oops', {
+              status: 500
+            });
+          }
+
+          if (rows.length == 0) {
+            return new Response('Invalid username or password', {
+              status: 401
+            });
+          }
+
+          const user = rows[0];
+
+          if (!('id' in user)) {
+            return new Response('Oops', {
+              status: 500
+            });
+          }
+
+          return new Response(user.id);
+        }
+      }
     }
 
     return new Response("🎈/☁️🏃‍♀️");
