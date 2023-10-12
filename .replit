@@ -7,7 +7,8 @@ hidden = [
   "bun.lockb",
   ".vscode",
   ".prettierignore",
-  ".gitignore"
+  ".gitignore",
+  ".env.*"
 ]
 
 [nix]
