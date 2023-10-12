@@ -2,7 +2,6 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import _basePrompt from "./prompt.json" assert { type: "json" };
 import { getServerAddress } from "./utils/addr";
-import { localIp } from "./utils/ip";
 
 import OpenAI from "openai";
 type ChatCompletionMessage = Parameters<
@@ -164,4 +163,4 @@ if (isDevelopment) {
   console.warn("In development mode!");
 }
 
-console.log("Local server address:", getServerAddress(localIp, server));
+console.log("Local server address:", getServerAddress(server));
