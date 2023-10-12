@@ -1,3 +1,9 @@
+const chatSecret = process.env.REQ_SECRET;
+
+if (!chatSecret) {
+  console.warn("REQ_SECRET env var not found, clients will not be authenticated");
+}
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import _basePrompt from "./prompt.json" assert { type: "json" };
@@ -24,7 +30,7 @@ const openai = new OpenAI({
 
 const streamEndToken = "[DONE]";
 
-const chatSecret = process.env.REQ_SECRET;
+
 
 type WebSocketData = {
   /**
