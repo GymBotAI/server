@@ -1,6 +1,6 @@
 entrypoint = "src/index.ts"
 
-run = ["./.config/replitRun.sh"]
+run = "./.config/replitRun.sh"
 
 hidden = [
   ".config",
