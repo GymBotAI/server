@@ -74,19 +74,22 @@ const server = Bun.serve<WebSocketData>({
         }
       }
 
-      case '/send': {
+      case "/send": {
         if (req.method == "POST") {
           const body = await req.json();
-          
-          await db.execute('INSERT INTO users (NAME, USERNAME, PASSWORD, DOB, WEIGHT, HEIGHT, GENDER) VALUES (?, ?, ?, ?, ?, ?, ?)', [
-            body.NAME,
-            body.USERNAME,
-            body.PASSWORD,
-            body.DOB,
-            body.WEIGHT,
-            body.HEIGHT,
-            body.GENDER
-          ])
+
+          await db.execute(
+            "INSERT INTO users (NAME, USERNAME, PASSWORD, DOB, WEIGHT, HEIGHT, GENDER) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [
+              body.NAME,
+              body.USERNAME,
+              body.PASSWORD,
+              body.DOB,
+              body.WEIGHT,
+              body.HEIGHT,
+              body.GENDER,
+            ]
+          );
         }
 
         break;
@@ -101,38 +104,44 @@ const server = Bun.serve<WebSocketData>({
         break;
       }
 
-      case '/search': {
+      case "/search": {
         if (req.method == "POST") {
           const body = await req.json();
-          const [rows] = await db.execute('SELECT * FROM users WHERE USERNAME = ?', [body.USERNAME]);
+          const [rows] = await db.execute(
+            "SELECT * FROM users WHERE USERNAME = ?",
+            [body.USERNAME]
+          );
           return new Response(JSON.stringify(rows));
         }
 
         break;
       }
 
-      case '/login': {
-        if (req.method == 'POST') {
+      case "/login": {
+        if (req.method == "POST") {
           const body = await req.json();
-          const [rows] = await db.execute('SELECT * FROM users WHERE USERNAME = ? AND PASSWORD = ?', [body.username, body.password]);
-          
-          if (!('length' in rows)) {
-            return new Response('Oops', {
-              status: 500
+          const [rows] = await db.execute(
+            "SELECT * FROM users WHERE USERNAME = ? AND PASSWORD = ?",
+            [body.username, body.password]
+          );
+
+          if (!("length" in rows)) {
+            return new Response("Oops", {
+              status: 500,
             });
           }
 
           if (rows.length == 0) {
-            return new Response('Invalid username or password', {
-              status: 401
+            return new Response("Invalid username or password", {
+              status: 401,
             });
           }
 
           const user = rows[0];
 
-          if (!('id' in user)) {
-            return new Response('Oops', {
-              status: 500
+          if (!("id" in user)) {
+            return new Response("Oops", {
+              status: 500,
             });
           }
 
@@ -142,17 +151,20 @@ const server = Bun.serve<WebSocketData>({
         break;
       }
 
-      case '/edit': {
-        if (req.method == 'POST') {
+      case "/edit": {
+        if (req.method == "POST") {
           const body = await req.json();
-          await db.execute('UPDATE users SET NAME = ?, DOB = ?, GENDER = ?, WEIGHT = ?, HEIGHT = ? WHERE USERNAME = ?', [
-            body.NAME,
-            body.DOB,
-            body.GENDER,
-            body.WEIGHT,
-            body.HEIGHT,
-            body.USERNAME,
-          ]);
+          await db.execute(
+            "UPDATE users SET NAME = ?, DOB = ?, GENDER = ?, WEIGHT = ?, HEIGHT = ? WHERE USERNAME = ?",
+            [
+              body.NAME,
+              body.DOB,
+              body.GENDER,
+              body.WEIGHT,
+              body.HEIGHT,
+              body.USERNAME,
+            ]
+          );
         }
 
         break;
