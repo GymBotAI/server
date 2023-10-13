@@ -55,7 +55,12 @@ const server = Bun.serve<WebSocketData>({
   development: isDevelopment,
   port: process.env.PORT || "3001",
   async fetch(req, server) {
-    const url = new URL(req.url);
+    let url: URL;
+    try {
+      url = new URL(req.url);
+    } catch {
+      return new Response("Invalid URL", { status: 400 });
+    }
 
     switch (url.pathname) {
       case "/chat": {
