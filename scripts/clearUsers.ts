@@ -23,7 +23,7 @@ const { confirmString } = await Enquirer.prompt<{
   message: `Please type "${confirmationString}" to confirm`,
 });
 
-if (confirmString != confirmationString) {
+if (confirmString.trim() != confirmationString) {
   process.exit();
 }
 
