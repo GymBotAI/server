@@ -126,7 +126,7 @@ const server = Bun.serve<WebSocketData>({
           );
 
           if (!("length" in rows)) {
-            return new Response("Oops", {
+            return new Response("Oops [1]", {
               status: 500,
             });
           }
@@ -139,13 +139,13 @@ const server = Bun.serve<WebSocketData>({
 
           const user = rows[0];
 
-          if (!("id" in user)) {
-            return new Response("Oops", {
+          if (!("ID" in user) || typeof user.ID != "number") {
+            return new Response("Oops [2]", {
               status: 500,
             });
           }
 
-          return new Response(user.id);
+          return new Response(user.ID.toString());
         }
 
         break;
