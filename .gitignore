@@ -1,7 +1,20 @@
+# Replit cache stuffs
 /.cache
-/.config
+
+# Replit config files
+/.config/*
+
+!/.config/bashrc
+!/.config/bin
+!/.config/replitRun.sh
+
+# Node.js stuffs
 node_modules
 /dist
+
+# dotenv
 .env.*
 !/.env.example
+
+# MacOS
 **/.DS_Store
