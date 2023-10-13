@@ -19,10 +19,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
     "dev": "bun --watch .",
-    "prod": "bun . --prod"
+    "prod": "bun . --prod",
+    "clear-users": "bun scripts/clearUsers.ts"
   },
   "type": "module",
   "dependencies": {
+    "enquirer": "^2.4.1",
     "mysql2": "^3.6.1",
     "openai": "^4.6.0"
   }
