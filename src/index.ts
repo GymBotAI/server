@@ -20,6 +20,8 @@ type ChatCompletionMessage = Parameters<
   typeof OpenAI.Chat.Completions.prototype.create
 >[0]["messages"][number];
 
+import { parse as parseCookie } from "cookie";
+
 const basePrompt = _basePrompt as {
   messages: ChatCompletionMessage[];
 };
@@ -56,6 +58,8 @@ const server = Bun.serve<WebSocketData>({
     } catch {
       return new Response("Invalid URL", { status: 400 });
     }
+
+    const cookies = parseCookie(req.headers.get("cookie") || "");
 
     switch (url.pathname) {
       case "/chat": {
