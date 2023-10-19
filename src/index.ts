@@ -13,12 +13,6 @@ if (!chatSecret) {
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
 import { getServerAddress } from "./utils/addr";
-import mysql from "mysql2/promise";
-
-import dbConfig from "./db-config";
-
-// Connect to the database
-const db = await mysql.createConnection(dbConfig);
 
 import OpenAI from "openai";
 type ChatCompletionMessage = Parameters<
@@ -77,102 +71,6 @@ const server = Bun.serve<WebSocketData>({
         } else {
           return new Response("Upgrade failed :(", { status: 500 });
         }
-      }
-
-      case "/send": {
-        if (req.method == "POST") {
-          const body = await req.json();
-
-          await db.execute(
-            "INSERT INTO users (NAME, USERNAME, PASSWORD, DOB, WEIGHT, HEIGHT, GENDER) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [
-              body.NAME,
-              body.USERNAME,
-              body.PASSWORD,
-              body.DOB,
-              body.WEIGHT,
-              body.HEIGHT,
-              body.GENDER,
-            ]
-          );
-        }
-
-        break;
-      }
-
-      case "/receive": {
-        if (req.method == "GET") {
-          const [rows] = await db.execute("SELECT * FROM users");
-          return new Response(JSON.stringify(rows));
-        }
-
-        break;
-      }
-
-      case "/search": {
-        if (req.method == "POST") {
-          const body = await req.json();
-          const [rows] = await db.execute(
-            "SELECT * FROM users WHERE USERNAME = ?",
-            [body.USERNAME]
-          );
-          return new Response(JSON.stringify(rows));
-        }
-
-        break;
-      }
-
-      case "/login": {
-        if (req.method == "POST") {
-          const body = await req.json();
-          const [rows] = await db.execute(
-            "SELECT * FROM users WHERE USERNAME = ? AND PASSWORD = ?",
-            [body.username, body.password]
-          );
-
-          if (!("length" in rows)) {
-            return new Response("Oops [1]", {
-              status: 500,
-            });
-          }
-
-          if (rows.length == 0) {
-            return new Response("Invalid username or password", {
-              status: 401,
-            });
-          }
-
-          const user = rows[0];
-
-          if (!("ID" in user) || typeof user.ID != "number") {
-            return new Response("Oops [2]", {
-              status: 500,
-            });
-          }
-
-          return new Response(user.ID.toString());
-        }
-
-        break;
-      }
-
-      case "/edit": {
-        if (req.method == "POST") {
-          const body = await req.json();
-          await db.execute(
-            "UPDATE users SET NAME = ?, DOB = ?, GENDER = ?, WEIGHT = ?, HEIGHT = ? WHERE USERNAME = ?",
-            [
-              body.NAME,
-              body.DOB,
-              body.GENDER,
-              body.WEIGHT,
-              body.HEIGHT,
-              body.USERNAME,
-            ]
-          );
-        }
-
-        break;
       }
     }
 
