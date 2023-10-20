@@ -3,13 +3,6 @@ if (!process.env.OPENAI_API_KEY) {
   process.exit(1);
 }
 
-const chatSecret = process.env.REQ_SECRET;
-if (!chatSecret) {
-  console.warn(
-    "REQ_SECRET env var not found, clients will not be authenticated"
-  );
-}
-
 import { supabase } from "./supabase";
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
@@ -21,6 +14,8 @@ type ChatCompletionMessage = Parameters<
 >[0]["messages"][number];
 
 import { parse as parseCookie } from "cookie";
+
+import type { User } from "@supabase/supabase-js";
 
 const basePrompt = _basePrompt as {
   messages: ChatCompletionMessage[];
@@ -40,6 +35,8 @@ type WebSocketData = {
    * `chatSecret` to authenticate
    */
   authed: boolean;
+
+  user: User | null;
 
   /**
    * The messages that have been sent
@@ -95,15 +92,27 @@ const server = Bun.serve<WebSocketData>({
 
       // WebSocket auth
       if (!ws.data.authed) {
-        if (chatSecret) {
-          ws.data.authed = message == chatSecret;
-        } else {
-          console.warn("REQ_SECRET env var not found, skipping auth");
-          ws.data.authed = true;
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser(message);
+        ws.data.authed = !!user && !error;
+
+        if (error) {
+          console.error(`[${ws.remoteAddress}]`, "WS auth error:", error);
+          console.debug(`[${ws.remoteAddress}]`, "WS client closed by server");
+          ws.close();
         }
 
         if (ws.data.authed) {
+          ws.data.user = user;
           console.debug(`[${ws.remoteAddress}]`, "WS client authenticated");
+
+          // Add user info to messages
+          ws.data.messages.push({
+            role: "system",
+            content: `The user's ID is ${user!.id}`,
+          });
         }
 
         return;
