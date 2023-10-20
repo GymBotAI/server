@@ -94,12 +94,12 @@ const server = Bun.serve<WebSocketData>({
       if (!ws.data.authed) {
         const {
           data: { user },
-          error,
+          error: userError,
         } = await supabase.auth.getUser(message);
-        ws.data.authed = !!user && !error;
+        ws.data.authed = !!user && !userError;
 
-        if (error) {
-          console.error(`[${ws.remoteAddress}]`, "WS auth error:", error);
+        if (userError) {
+          console.error(`[${ws.remoteAddress}]`, "WS auth error:", userError);
           console.debug(`[${ws.remoteAddress}]`, "WS client closed by server");
           ws.close();
         }
@@ -108,11 +108,49 @@ const server = Bun.serve<WebSocketData>({
           ws.data.user = user;
           console.debug(`[${ws.remoteAddress}]`, "WS client authenticated");
 
-          // Add user info to messages
-          ws.data.messages.push({
-            role: "system",
-            content: `The user's ID is ${user!.id}`,
-          });
+          // Load user info
+          const { data: userData, error: userDataError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", user!.id)
+            .single();
+
+          if (userDataError || !userData) {
+            console.error(
+              `[${ws.remoteAddress}]`,
+              "WS user data error:",
+              userDataError
+            );
+            console.debug(
+              `[${ws.remoteAddress}]`,
+              "WS client closed by server"
+            );
+            ws.close();
+          }
+
+          let userDataMessage = "";
+
+          for (const key of [
+            "name",
+            "birthday",
+            "gender",
+            "weight",
+            "height",
+          ] as const) {
+            const value = userData![key];
+
+            if (value != null) {
+              userDataMessage += `The user's ${key} is ${value}.\n`;
+            }
+          }
+
+          if (userDataMessage) {
+            // Add user info to messages
+            ws.data.messages.push({
+              role: "system",
+              content: userDataMessage,
+            });
+          }
         }
 
         return;

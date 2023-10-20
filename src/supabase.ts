@@ -7,4 +7,6 @@ if (!supabaseUrl || !supabaseKey) {
 
 import { createClient } from "@supabase/supabase-js";
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+import type { Database } from "./types/database";
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
