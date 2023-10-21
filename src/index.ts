@@ -161,6 +161,13 @@ const server = Bun.serve<WebSocketData>({
 
       console.debug(`[${ws.remoteAddress}]`, "WS message:", message);
 
+      if (message == "!dev" && isDevelopment) {
+        ws.data.dev = true;
+        ws.send("Switched to development mode!");
+        ws.send(streamEndToken);
+        return;
+      }
+
       // Demo messages in development
       if (ws.data.dev) {
         if (message == "!prod") {
