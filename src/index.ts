@@ -161,10 +161,10 @@ const server = Bun.serve<WebSocketData>({
       // Demo messages in development
       if (isDevelopment) {
         const rand = Math.random();
-        if (rand > 0.666) {
+        if (rand > 0.9) {
           ws.send("Hello, demo response message!");
           ws.send(streamEndToken);
-        } else if (rand > 0.333) {
+        } else if (rand > 0.6) {
           let intv: number | Timer = 0;
           intv = setInterval(() => {
             ws.send(Math.random().toString(36).substring(2, 5));
@@ -173,6 +173,9 @@ const server = Bun.serve<WebSocketData>({
             clearInterval(intv);
             ws.send(streamEndToken);
           }, 5000);
+        } else if (rand > 0.3) {
+          ws.send("\u0007");
+          ws.send(streamEndToken);
         } else {
           ws.send("This is a paragraph");
           ws.send(streamEndToken);
