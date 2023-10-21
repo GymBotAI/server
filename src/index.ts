@@ -43,6 +43,8 @@ type WebSocketData = {
    * between the client and the server
    */
   messages: ChatCompletionMessage[];
+
+  dev: boolean;
 };
 
 const server = Bun.serve<WebSocketData>({
@@ -66,6 +68,7 @@ const server = Bun.serve<WebSocketData>({
             data: {
               authed: false,
               messages: basePrompt.messages,
+              dev: isDevelopment,
             },
           })
         ) {
@@ -159,7 +162,14 @@ const server = Bun.serve<WebSocketData>({
       console.debug(`[${ws.remoteAddress}]`, "WS message:", message);
 
       // Demo messages in development
-      if (isDevelopment) {
+      if (ws.data.dev) {
+        if (message == "!prod") {
+          ws.data.dev = false;
+          ws.send("Switched to production mode!");
+          ws.send(streamEndToken);
+          return;
+        }
+
         const rand = Math.random();
         if (rand > 0.9) {
           ws.send("Hello, demo response message!");
