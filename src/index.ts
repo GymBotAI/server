@@ -98,11 +98,15 @@ const server = Bun.serve<WebSocketData>({
         const {
           data: { user },
           error: userError,
-        } = await supabase.auth.getUser(message); // TODO: handle JWT errors
+        } = await supabase.auth.getUser(message);
         ws.data.authed = !!user && !userError;
 
         if (userError) {
-          console.error(`[${ws.remoteAddress}]`, "WS auth error:", userError);
+          console.error(
+            `[${ws.remoteAddress}]`,
+            "WS auth error:",
+            userError.message
+          );
           console.debug(`[${ws.remoteAddress}]`, "WS client closed by server");
           ws.close();
         }
