@@ -98,7 +98,7 @@ const server = Bun.serve<WebSocketData>({
         const {
           data: { user },
           error: userError,
-        } = await supabase.auth.getUser(message);
+        } = await supabase.auth.getUser(message); // TODO: handle JWT errors
         ws.data.authed = !!user && !userError;
 
         if (userError) {
