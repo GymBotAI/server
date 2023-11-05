@@ -135,7 +135,7 @@ const server = Bun.serve<WebSocketData>({
             ws.close();
           }
 
-          let userDataMessage = "";
+          let userDataMessage = `The current date and time is ${new Date()}.\n`;
 
           for (const key of [
             "name",
