@@ -8,7 +8,7 @@ import { openai, openaiChatModel } from "./openai";
 import { parse as parseCookie } from "cookie";
 import { isDevelopment, streamEndToken } from "./consts";
 
-import type { User } from "@supabase/supabase-js";
+import type { WebSocketData } from "./types/ws";
 import type { ChatCompletionMessageParam } from "openai/resources/index.js";
 
 // Route handlers
@@ -16,24 +16,6 @@ import workout from "./routes/workout";
 
 const basePrompt = _basePrompt as {
   messages: ChatCompletionMessageParam[];
-};
-
-type WebSocketData = {
-  /**
-   * Wether the client has sent the correct
-   * `chatSecret` to authenticate
-   */
-  authed: boolean;
-
-  user: User | null;
-
-  /**
-   * The messages that have been sent
-   * between the client and the server
-   */
-  messages: ChatCompletionMessageParam[];
-
-  dev: boolean;
 };
 
 const server = Bun.serve<WebSocketData>({
