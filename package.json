@@ -5,6 +5,7 @@
   "author": "LuisAFK",
   "main": "src/index.ts",
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@types/cookie": "^0.5.3",
     "bun-types": "^1.0.1",
     "prettier": "^2.8.8",
