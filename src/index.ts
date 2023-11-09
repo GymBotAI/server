@@ -3,33 +3,25 @@ if (!process.env.OPENAI_API_KEY) {
   process.exit(1);
 }
 
-import workoutSchema from "./schemas/workout";
-
 import { supabase } from "./supabase";
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
 import { getServerAddress } from "./utils/addr";
 
-import OpenAI from "openai";
-type ChatCompletionMessage = Parameters<
-  typeof OpenAI.Chat.Completions.prototype.create
->[0]["messages"][number];
+import { openai, openaiChatModel } from "./openai";
 
 import { parse as parseCookie } from "cookie";
+import { isDevelopment, streamEndToken } from "./consts";
 
 import type { User } from "@supabase/supabase-js";
+import type { ChatCompletionMessageParam } from "openai/resources/index.js";
+
+// Route handlers
+import workout from "./routes/workout";
 
 const basePrompt = _basePrompt as {
-  messages: ChatCompletionMessage[];
+  messages: ChatCompletionMessageParam[];
 };
-
-const isDevelopment =
-  !process.argv.includes("--prod") && process.env.NODE_ENV != "production";
-
-const openaiChatModel = "gpt-3.5-turbo-1106";
-const openai = new OpenAI();
-
-const streamEndToken = "[DONE]";
 
 type WebSocketData = {
   /**
@@ -44,7 +36,7 @@ type WebSocketData = {
    * The messages that have been sent
    * between the client and the server
    */
-  messages: ChatCompletionMessage[];
+  messages: ChatCompletionMessageParam[];
 
   dev: boolean;
 };
@@ -81,59 +73,7 @@ const server = Bun.serve<WebSocketData>({
       }
 
       case "/workout": {
-        if (req.method != "POST") {
-          return new Response("Invalid method", { status: 405 });
-        }
-
-        const data = workoutSchema.safeParse(
-          await req.json().catch(() => null)
-        );
-
-        if (!data.success) {
-          return new Response("Invalid body", { status: 400 });
-        }
-
-        let prompt = `Generate a workout for bodypart ${JSON.stringify(
-          data.data.bodypart
-        )} that lasts ${data.data.duration} minutes.`;
-        if (data.data.notes) {
-          prompt += ` Other notes from the user: ${JSON.stringify(
-            data.data.notes
-          )}`;
-        }
-        prompt +=
-          "\nReturn the workout as a JSON object in the following format:\n```ts";
-        prompt += /*javascript*/ `
-          interface Workout {
-            title: string;
-            description: string;
-            equipment: string[];
-            exercises: Exercise[];
-          };
-
-          interface Exercise {
-            name: string;
-            description: string;
-            sets: number;
-            reps: number;
-            rest: number;
-          };
-        `;
-        prompt += "```";
-
-        const completion = await openai.chat.completions.create({
-          model: openaiChatModel,
-          response_format: {
-            type: "json_object",
-          },
-          messages: [{ role: "system", content: prompt }],
-        });
-
-        return new Response(completion.choices[0].message.content, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        return await workout(req);
       }
     }
 
