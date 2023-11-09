@@ -101,8 +101,39 @@ const server = Bun.serve<WebSocketData>({
             data.data.notes
           )}`;
         }
+        prompt +=
+          "\nReturn the workout as a JSON object in the following format:\n```ts";
+        prompt += /*javascript*/ `
+          interface Workout {
+            title: string;
+            description: string;
+            equipment: string[];
+            exercises: Exercise[];
+          };
 
-        return new Response(prompt);
+          interface Exercise {
+            name: string;
+            description: string;
+            sets: number;
+            reps: number;
+            rest: number;
+          };
+        `;
+        prompt += "```";
+
+        const completion = await openai.chat.completions.create({
+          model: openaiChatModel,
+          response_format: {
+            type: "json_object",
+          },
+          messages: [{ role: "system", content: prompt }],
+        });
+
+        return new Response(completion.choices[0].message.content, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       }
     }
 
