@@ -1,4 +1,6 @@
 import Enquirer from "enquirer";
+import mysql from "mysql2/promise";
+import dbConfig from "../src/db-config";
 
 const confirmationString =
   "I understand that this will delete all the users in the database";
@@ -28,10 +30,6 @@ if (confirmString.trim() != confirmationString) {
 }
 
 console.log("Initializing database...");
-
-import mysql from "mysql2/promise";
-
-import dbConfig from "../src/db-config";
 
 // Connect to the database
 console.log("Connecting to database...");

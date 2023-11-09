@@ -1,6 +1,5 @@
-import workoutSchema from "../../schemas/workout";
-
 import { openai, openaiChatModel } from "../../openai";
+import workoutSchema from "../../schemas/workout";
 
 export default async function handler(req: Request) {
   if (req.method != "POST") {

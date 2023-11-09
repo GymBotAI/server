@@ -1,6 +1,5 @@
-import { localIp } from "./ip";
-
 import type { Server } from "bun";
+import { localIp } from "./ip";
 
 export function getServerAddress(server: Server) {
   if (process.env.REPL_HOME) {
