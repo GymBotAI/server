@@ -1,8 +1,3 @@
-if (!process.env.OPENAI_API_KEY) {
-  console.error("OPENAI_API_KEY env var not found");
-  process.exit(1);
-}
-
 import { supabase } from "./supabase";
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
