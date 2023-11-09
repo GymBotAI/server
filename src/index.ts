@@ -26,7 +26,7 @@ const basePrompt = _basePrompt as {
 const isDevelopment =
   !process.argv.includes("--prod") && process.env.NODE_ENV != "production";
 
-const openaiChatModel = "gpt-3.5-turbo";
+const openaiChatModel = "gpt-3.5-turbo-1106";
 const openai = new OpenAI();
 
 const streamEndToken = "[DONE]";
