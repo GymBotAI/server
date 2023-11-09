@@ -3,6 +3,8 @@ if (!process.env.OPENAI_API_KEY) {
   process.exit(1);
 }
 
+import workoutSchema from "./schemas/workout";
+
 import { supabase } from "./supabase";
 
 import _basePrompt from "./prompt.json" assert { type: "json" };
@@ -76,6 +78,31 @@ const server = Bun.serve<WebSocketData>({
         } else {
           return new Response("Upgrade failed :(", { status: 500 });
         }
+      }
+
+      case "/workout": {
+        if (req.method != "POST") {
+          return new Response("Invalid method", { status: 405 });
+        }
+
+        const data = workoutSchema.safeParse(
+          await req.json().catch(() => null)
+        );
+
+        if (!data.success) {
+          return new Response("Invalid body", { status: 400 });
+        }
+
+        let prompt = `Generate a workout for bodypart ${JSON.stringify(
+          data.data.bodypart
+        )} that lasts ${data.data.duration} minutes.`;
+        if (data.data.notes) {
+          prompt += ` Other notes from the user: ${JSON.stringify(
+            data.data.notes
+          )}`;
+        }
+
+        return new Response(prompt);
       }
     }
 
