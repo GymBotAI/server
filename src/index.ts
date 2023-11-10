@@ -2,8 +2,7 @@ import type { WebSocketData } from "./types/ws";
 
 import { isDevelopment, streamEndToken } from "./consts";
 import { openai, openaiChatModel } from "./openai";
-import chat from "./routes/chat";
-import workout from "./routes/workout";
+import * as routes from "./routes";
 import { supabase } from "./supabase";
 import { getServerAddress } from "./utils/addr";
 
@@ -20,11 +19,11 @@ const server = Bun.serve<WebSocketData>({
 
     switch (url.pathname) {
       case "/chat": {
-        return await chat(req, server);
+        return await routes.chat(req, server);
       }
 
       case "/workout": {
-        return await workout(req);
+        return await routes.workout(req);
       }
     }
 
