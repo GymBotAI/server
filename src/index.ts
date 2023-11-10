@@ -20,8 +20,6 @@ const server = Bun.serve<WebSocketData>({
       return new Response("Invalid URL", { status: 400 });
     }
 
-    const cookies = parseCookie(req.headers.get("cookie") || "");
-
     switch (url.pathname) {
       case "/chat": {
         return await chat(req, server);
