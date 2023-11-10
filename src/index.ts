@@ -1,7 +1,5 @@
 import type { WebSocketData } from "./types/ws";
 
-import { parse as parseCookie } from "cookie";
-
 import { isDevelopment, streamEndToken } from "./consts";
 import { openai, openaiChatModel } from "./openai";
 import chat from "./routes/chat";
