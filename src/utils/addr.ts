@@ -1,4 +1,5 @@
 import type { Server } from "bun";
+
 import { localIp } from "./ip";
 
 export function getServerAddress(server: Server) {

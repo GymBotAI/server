@@ -1,5 +1,6 @@
 import Enquirer from "enquirer";
 import mysql from "mysql2/promise";
+
 import dbConfig from "../src/db-config";
 
 const confirmationString =
