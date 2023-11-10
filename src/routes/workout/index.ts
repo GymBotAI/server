@@ -21,21 +21,21 @@ export default async function handler(req: Request) {
   prompt +=
     "\nReturn the workout as a JSON object in the following format:\n```ts";
   prompt += /*javascript*/ `
-  interface Workout {
-    title: string;
-    description: string;
-    equipment: string[];
-    exercises: Exercise[];
-  };
+    interface Workout {
+      title: string;
+      description: string;
+      equipment: string[];
+      exercises: Exercise[];
+    };
 
-  interface Exercise {
-    name: string;
-    description: string;
-    sets: number;
-    reps: number;
-    rest: number;
-  };
-`;
+    interface Exercise {
+      name: string;
+      description: string;
+      sets: number;
+      reps: number;
+      rest: number;
+    };
+  `;
   prompt += "```";
 
   const completion = await openai.chat.completions.create({
