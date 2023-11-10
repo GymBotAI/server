@@ -1,19 +1,13 @@
-import type { ChatCompletionMessageParam } from "openai/resources/index.js";
 import type { WebSocketData } from "./types/ws";
 
 import { parse as parseCookie } from "cookie";
 
 import { isDevelopment, streamEndToken } from "./consts";
 import { openai, openaiChatModel } from "./openai";
+import chat from "./routes/chat";
 import workout from "./routes/workout";
 import { supabase } from "./supabase";
 import { getServerAddress } from "./utils/addr";
-
-import _basePrompt from "./prompt.json";
-
-const basePrompt = _basePrompt as {
-  messages: ChatCompletionMessageParam[];
-};
 
 const server = Bun.serve<WebSocketData>({
   development: isDevelopment,
@@ -30,20 +24,7 @@ const server = Bun.serve<WebSocketData>({
 
     switch (url.pathname) {
       case "/chat": {
-        // upgrade the request to a WebSocket
-        if (
-          server.upgrade(req, {
-            data: {
-              authed: false,
-              messages: basePrompt.messages,
-              dev: isDevelopment,
-            },
-          })
-        ) {
-          return;
-        } else {
-          return new Response("Upgrade failed :(", { status: 500 });
-        }
+        return await chat(req, server);
       }
 
       case "/workout": {
