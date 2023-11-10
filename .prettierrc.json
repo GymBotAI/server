@@ -7,6 +7,17 @@
       }
     }
   ],
-
+  "importOrder": [
+    "<TYPES>",
+    "<TYPES>^\\.",
+    "",
+    "<BUILTIN_MODULES>",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^\\.(?!.*\\.json$)",
+    "",
+    "^\\..*\\.json$"
+  ],
   "importOrderTypeScriptVersion": "5.0.0"
 }
