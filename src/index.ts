@@ -1,18 +1,12 @@
-import { supabase } from "./supabase";
-
-import _basePrompt from "./prompt.json" assert { type: "json" };
-import { getServerAddress } from "./utils/addr";
-
-import { openai, openaiChatModel } from "./openai";
-
 import { parse as parseCookie } from "cookie";
-import { isDevelopment, streamEndToken } from "./consts";
-
-import type { WebSocketData } from "./types/ws";
 import type { ChatCompletionMessageParam } from "openai/resources/index.js";
-
-// Route handlers
+import { isDevelopment, streamEndToken } from "./consts";
+import { openai, openaiChatModel } from "./openai";
+import _basePrompt from "./prompt.json";
 import workout from "./routes/workout";
+import { supabase } from "./supabase";
+import type { WebSocketData } from "./types/ws";
+import { getServerAddress } from "./utils/addr";
 
 const basePrompt = _basePrompt as {
   messages: ChatCompletionMessageParam[];
