@@ -12,11 +12,17 @@ export default async function handler(req: Request) {
     return new Response("Invalid body", { status: 400 });
   }
 
-  let prompt = `Generate a workout for bodypart ${JSON.stringify(
-    data.data.bodypart
-  )} that lasts ${data.data.duration} minutes.`;
+  let prompt = `Generate a workout for the user that lasts ${
+    data.data.duration
+  } minutes. Their goal is to ${JSON.stringify(
+    data.data.goal
+  )}, and their subgoal is to ${JSON.stringify(
+    data.data.subgoal
+  )}. They have access to the following equipment: ${data.data.equipment
+    .map((s) => JSON.stringify(s))
+    .join(", ")}`;
   if (data.data.notes) {
-    prompt += ` Other notes from the user: ${JSON.stringify(data.data.notes)}`;
+    prompt += `. Other notes from the user: ${JSON.stringify(data.data.notes)}`;
   }
   prompt +=
     "\nReturn the workout as a JSON object in the following format:\n```ts";
