@@ -16,6 +16,9 @@ node_modules
 .env.*
 !/.env.example
 
+# Cloudflare Workers secrets
+/.dev.vars
+
 # MacOS
 **/.DS_Store
 
