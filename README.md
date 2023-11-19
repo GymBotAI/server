@@ -1,6 +1,6 @@
 # GymBot AI Server
 
-The server that handles the ChatGPT API for the GymBot AI app.
+The server that handles chat and AI workout generation for the GymBot AI app.
 
 ## Development
 
