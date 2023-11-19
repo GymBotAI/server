@@ -21,3 +21,6 @@ node_modules
 
 # Luca's server thing
 /pin-log.txt
+
+# Wrangler
+/.wrangler
