@@ -18,7 +18,6 @@ export default async function handler(req: Request, env: Env, isDev: boolean) {
   const wsHandler = new WsHandler(server, ip, env, isDev);
 
   server.accept();
-  server.addEventListener("open", wsHandler.onOpen);
   server.addEventListener("message", wsHandler.onMessage);
   server.addEventListener("close", wsHandler.onClose);
 

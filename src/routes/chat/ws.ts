@@ -40,6 +40,8 @@ export default class WsHandler {
 
     this.openai = makeOpenAi(env);
     this.supabase = makeSupabase(env);
+
+    this.onOpen();
   }
 
   onOpen() {
