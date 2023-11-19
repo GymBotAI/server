@@ -45,11 +45,11 @@ export default class WsHandler {
   }
 
   onOpen() {
-    console.debug(`[${this.ip}]`, "WS client connected");
+    console.log(`[${this.ip}]`, "WS client connected");
   }
 
   onClose() {
-    console.debug(`[${this.ip}]`, "WS client disconnected");
+    console.log(`[${this.ip}]`, "WS client disconnected");
   }
 
   async onMessage(e: MessageEvent) {
@@ -67,13 +67,13 @@ export default class WsHandler {
 
       if (userError) {
         console.error(`[${this.ip}]`, "WS auth error:", userError.message);
-        console.debug(`[${this.ip}]`, "WS client closed by server");
+        console.log(`[${this.ip}]`, "WS client closed by server");
         this.ws.close();
       }
 
       if (this.data.authed) {
         this.data.user = user;
-        console.debug(`[${this.ip}]`, "WS client authenticated");
+        console.log(`[${this.ip}]`, "WS client authenticated");
 
         // Load user info
         const { data: userData, error: userDataError } = await this.supabase
@@ -84,7 +84,7 @@ export default class WsHandler {
 
         if (userDataError || !userData) {
           console.error(`[${this.ip}]`, "WS user data error:", userDataError);
-          console.debug(`[${this.ip}]`, "WS client closed by server");
+          console.log(`[${this.ip}]`, "WS client closed by server");
           this.ws.close();
         }
 
@@ -116,7 +116,7 @@ export default class WsHandler {
       return;
     }
 
-    console.debug(`[${this.ip}]`, "WS message:", e.data);
+    console.log(`[${this.ip}]`, "WS message:", e.data);
 
     if (e.data == "!dev" && this.isDev) {
       this.data.dev = true;
