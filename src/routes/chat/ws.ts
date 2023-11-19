@@ -1,9 +1,9 @@
 import type { ChatCompletionMessageParam } from "openai/resources/index.js";
 import type { WebSocketData } from "../../types/ws";
 
-import { isDevelopment, streamEndToken } from "../../consts";
-import { openai, openaiChatModel } from "../../openai";
-import { supabase } from "../../supabase";
+import { streamEndToken } from "../../consts";
+import { makeOpenAi, openaiChatModel } from "../../openai";
+import { makeSupabase } from "../../supabase";
 
 import _basePrompt from "../../prompt.json";
 
@@ -17,17 +17,29 @@ export default class WsHandler {
 
   ip: string;
 
-  constructor(ws: WebSocket, ip: string) {
+  env: Env;
+  isDev: boolean;
+
+  openai: ReturnType<typeof makeOpenAi>;
+  supabase: ReturnType<typeof makeSupabase>;
+
+  constructor(ws: WebSocket, ip: string, env: Env, isDev: boolean) {
     this.ws = ws;
 
     this.data = {
       authed: false,
       messages: basePrompt.messages,
-      dev: isDevelopment,
+      dev: isDev,
       user: null,
     };
 
     this.ip = ip;
+
+    this.env = env;
+    this.isDev = isDev;
+
+    this.openai = makeOpenAi(env);
+    this.supabase = makeSupabase(env);
   }
 
   onOpen() {
@@ -48,7 +60,7 @@ export default class WsHandler {
       const {
         data: { user },
         error: userError,
-      } = await supabase.auth.getUser(e.data);
+      } = await this.supabase.auth.getUser(e.data);
       this.data.authed = !!user && !userError;
 
       if (userError) {
@@ -62,7 +74,7 @@ export default class WsHandler {
         console.debug(`[${this.ip}]`, "WS client authenticated");
 
         // Load user info
-        const { data: userData, error: userDataError } = await supabase
+        const { data: userData, error: userDataError } = await this.supabase
           .from("users")
           .select("*")
           .eq("id", user!.id)
@@ -104,7 +116,7 @@ export default class WsHandler {
 
     console.debug(`[${this.ip}]`, "WS message:", e.data);
 
-    if (e.data == "!dev" && isDevelopment) {
+    if (e.data == "!dev" && this.isDev) {
       this.data.dev = true;
       this.ws.send("Switched to development mode!");
       this.ws.send(streamEndToken);
@@ -151,7 +163,7 @@ export default class WsHandler {
     });
 
     try {
-      const chatCompletion = await openai.chat.completions.create({
+      const chatCompletion = await this.openai.chat.completions.create({
         model: openaiChatModel,
         messages: this.data.messages,
         stream: true,

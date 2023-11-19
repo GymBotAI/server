@@ -1,6 +1,6 @@
 import WsHandler from "./ws";
 
-export default async function handler(req: Request) {
+export default async function handler(req: Request, env: Env, isDev: boolean) {
   const upgradeHeader = req.headers.get("Upgrade");
   if (!upgradeHeader || upgradeHeader !== "websocket") {
     return new Response("Expected Upgrade: websocket", { status: 426 });
@@ -15,7 +15,7 @@ export default async function handler(req: Request) {
   const webSocketPair = new WebSocketPair();
   const [client, server] = Object.values(webSocketPair);
 
-  const wsHandler = new WsHandler(server, ip);
+  const wsHandler = new WsHandler(server, ip, env, isDev);
 
   server.accept();
   server.addEventListener("open", wsHandler.onOpen);

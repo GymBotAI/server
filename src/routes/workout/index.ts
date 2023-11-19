@@ -1,7 +1,7 @@
-import { openai, openaiChatModel } from "../../openai";
+import { makeOpenAi, openaiChatModel } from "../../openai";
 import workoutSchema from "./schema";
 
-export default async function handler(req: Request) {
+export default async function handler(req: Request, env: Env) {
   const data = workoutSchema.safeParse(await req.json().catch(() => null));
 
   if (!data.success) {
@@ -39,6 +39,8 @@ export default async function handler(req: Request) {
     };
   `;
   prompt += "```";
+
+  const openai = makeOpenAi(env);
 
   const completion = await openai.chat.completions.create({
     model: openaiChatModel,
