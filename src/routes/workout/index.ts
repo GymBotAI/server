@@ -2,10 +2,6 @@ import { openai, openaiChatModel } from "../../openai";
 import workoutSchema from "./schema";
 
 export default async function handler(req: Request) {
-  if (req.method != "POST") {
-    return new Response("Invalid method", { status: 405 });
-  }
-
   const data = workoutSchema.safeParse(await req.json().catch(() => null));
 
   if (!data.success) {
